@@ -107,7 +107,6 @@
         this.listLoading = true
 
         const { data } = await FindMenusAsTreeCte()
-        console.log(data)
         this.list = data
         setTimeout(() => {
           this.listLoading = false

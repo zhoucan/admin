@@ -78,8 +78,8 @@ export const formatRoutes = (routes) => {
               component: `@/views/${url}/index`,
               meta: {
                 title: name,
-                icon: 'home',
-                affix: true,
+                icon: icon,
+                affix: url === 'index' ? true : false,
               },
             },
           ],
@@ -107,7 +107,7 @@ export const formatRoutes = (routes) => {
           fmRouter = {
                 path: `/${url}`,
                 name: name,
-                meta: { title: name, icon: 'home' },
+                meta: { title: name, icon: icon, },
                 children: children2,
                 component: 'Layout',
               }
