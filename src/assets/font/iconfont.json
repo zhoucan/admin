@@ -1,0 +1,16 @@
+{
+  "id": "2709423",
+  "name": "el",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-my",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "8084588",
+      "name": " 重置",
+      "font_class": "zhongzhi",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    }
+  ]
+}

@@ -210,3 +210,4 @@ export function isNum(str) {
   const reg = /^\d+(\.\d{1,2})?$/
   return reg.test(str)
 }
+

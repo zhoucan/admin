@@ -23,3 +23,17 @@ export function doDelete(data) {
     data,
   })
 }
+
+export function FreeezeUser(data) {
+  return request({
+    url: `/auth/UserApp/FreeezeUser?id=${data}`,
+    method: 'put',
+  })
+}
+export function ResumeUser(data) {
+  return request({
+    url: `/auth/UserApp/ResumeUser?id=${data}`,
+    method: 'put',
+  })
+}
+

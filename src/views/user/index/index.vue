@@ -13,14 +13,14 @@
         <el-form :inline="true" :model="queryForm" @submit.native.prevent>
           <el-form-item>
             <el-input
-              v-model.trim="queryForm.username"
+              v-model.trim="queryForm.id"
               placeholder="请输入用户ID"
               clearable
             />
           </el-form-item>
           <el-form-item>
             <el-input
-              v-model.trim="queryForm.username"
+              v-model.trim="queryForm.account"
               placeholder="请输入账户"
               clearable
             />
@@ -28,6 +28,9 @@
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="queryData">
               查询
+            </el-button>
+            <el-button icon="iconfont el-icon-myzhongzhi" type="danger" @click="resetData">
+              重置
             </el-button>
           </el-form-item>
         </el-form>
@@ -40,7 +43,7 @@
       :element-loading-text="elementLoadingText"
       @selection-change="setSelectRows"
     >
-      <el-table-column show-overflow-tooltip type="selection"></el-table-column>
+      <!-- <el-table-column show-overflow-tooltip type="selection"></el-table-column> -->
       <el-table-column
         show-overflow-tooltip
         prop="id"
@@ -57,8 +60,8 @@
         label="账号类型"
       >
         <template #default="{ row }">
-          <el-tag v-if="row.accountType === 1" type="success">手机号码</el-tag>
-          <el-tag v-else type="info"></el-tag>
+          <el-tag v-if="row.accountType === 1">手机号码</el-tag>
+          <el-tag v-else type="success"></el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -88,8 +91,12 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="200">
         <template #default="{ row }">
-          <el-button type="text" @click="handleEdit(row)">查看账户明细</el-button>
-          <el-button type="text" @click="handleDelete(row)">冻结</el-button>
+          <el-button type="text" @click="handleEdit">查看账户明细</el-button>
+          <el-button  v-if="row.enable" type="text" @click="handleblocking(row)">冻结</el-button>
+          <el-button
+              v-else
+              type="text"
+              @click="handleblocking(row)">恢复</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -102,17 +109,18 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     ></el-pagination>
-    <edit ref="edit" @fetch-data="fetchData"></edit>
+    <Detail ref="Detail"></Detail>
   </div>
 </template>
 
 <script>
-  import { getList, doDelete } from '@/api/userManagement'
-  import Edit from './components/UserManagementEdit'
+  import { getList, FreeezeUser,ResumeUser  } from '@/api/userManagement'
+  import StringUtils from '@/utils/StringUtils'
+  import Detail from './components/userDetail'
 
   export default {
     name: 'UserManagement',
-    components: { Edit },
+    components: { Detail },
     data() {
       return {
         list: null,
@@ -123,7 +131,9 @@
         elementLoadingText: '正在加载...',
         queryForm: {
           current:1,
-          size:10
+          size:10,
+          id:'',
+          account:''
           
         },
       }
@@ -135,17 +145,21 @@
       setSelectRows(val) {
         this.selectRows = val
       },
-      handleEdit(row) {
-        if (row.id) {
-          this.$refs['edit'].showEdit(row)
-        } else {
-          this.$refs['edit'].showEdit()
-        }
+      handleEdit() {
+          this.$refs['Detail'].showDetail()
       },
-      handleDelete(row) {
-        if (row.id) {
-          this.$baseConfirm('你确定要删除当前项吗', null, async () => {
-            const { msg } = await doDelete({ ids: row.id })
+      handleblocking(row) {
+        if(row.id && row.enable === false){
+            this.$baseConfirm(`你确定要恢复${row.id}用户吗`, null, async () => {
+            const { msg } = await ResumeUser(row.id)
+            this.$baseMessage(msg, 'success')
+            this.fetchData()
+          })   
+          return
+        }
+        if (row.id && row.enable === true) {
+          this.$baseConfirm(`你确定要冻结${row.id}用户吗`, null, async () => {
+            const { msg } = await FreeezeUser(row.id)
             this.$baseMessage(msg, 'success')
             this.fetchData()
           })
@@ -164,7 +178,8 @@
         }
       },
       handleSizeChange(val) {
-        this.queryForm.pageSize = val
+        console.log(val)
+        this.queryForm.size = val
         this.fetchData()
       },
       handleCurrentChange(val) {
@@ -172,8 +187,19 @@
         this.fetchData()
       },
       queryData() {
-        this.queryForm.current = 1
-        this.fetchData()
+        if (!(StringUtils.isEmpty(this.queryForm.id) ^ StringUtils.isEmpty(this.queryForm.account))) {
+               this.$baseMessage('不能为空', 'warning')   
+               return 
+        }
+         let obj = {
+            current : 1
+         }
+         this.queryForm = Object.assign(this.queryForm, obj)
+         this.fetchData()
+      },
+      resetData() {
+         this.queryForm = this.$options.data().queryForm
+         this.fetchData()
       },
       async fetchData() {
         this.listLoading = true
