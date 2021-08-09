@@ -5,11 +5,11 @@
         <router-view :key="key" class="app-main-height" />
       </keep-alive>
     </transition>
-    <footer v-show="footerCopyright" class="footer-copyright">
+    <!-- <footer v-show="footerCopyright" class="footer-copyright">
       Copyright
       <vab-icon :icon="['fas', 'copyright']"></vab-icon>
       xxx后台管理{{ fullYear }}
-    </footer>
+    </footer> -->
   </div>
 </template>
 

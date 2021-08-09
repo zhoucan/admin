@@ -13,8 +13,10 @@ import {
 } from '@/config'
 import store from '@/store'
 import qs from 'qs'
+import VueRouter from 'vue-router'
 import router from '@/router'
 import { isArray } from '@/utils/validate'
+Vue.use(VueRouter)
 
 let loadingInstance
 
@@ -120,6 +122,8 @@ instance.interceptors.response.use(
       if (message.includes('Request failed with status code')) {
         const code = message.substr(message.length - 3)
         message = '后端接口' + code + '异常'
+        message = 'token失效重新登录'
+        router.push(`/`)
       }
       Vue.prototype.$baseMessage(message || `后端接口未知异常`, 'error')
       return Promise.reject(error)

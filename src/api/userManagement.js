@@ -37,3 +37,26 @@ export function ResumeUser(data) {
   })
 }
 
+export function GetCoinTypeList() {
+  return request({
+    url: `wallet/MisWallet/GetCoinTypeList`,
+    method: 'get',
+  })
+}
+
+export function WithdrawalPage(params) {
+  return request({
+    url: `wallet/MisWallet/GetUserWithdrawalPage`,
+    method: 'get',
+    params
+  })
+}
+export function RechargePage(params) {
+  return request({
+    url: `wallet/MisWallet/GetUserRechargePage`,
+    method: 'get',
+    params
+  })
+}
+
+

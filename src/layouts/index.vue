@@ -230,7 +230,6 @@
         margin-left: $base-left-menu-width;
         background: #f6f8f9;
         transition: $base-transition;
-
         ::v-deep {
           .fixed-header {
             @include fix-header;

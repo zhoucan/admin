@@ -91,7 +91,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="200">
         <template #default="{ row }">
-          <el-button type="text" @click="handleEdit">查看账户明细</el-button>
+          <el-button type="text" @click="handleQuery(row)">查看账户明细</el-button>
           <el-button  v-if="row.enable" type="text" @click="handleblocking(row)">冻结</el-button>
           <el-button
               v-else
@@ -102,8 +102,8 @@
     </el-table>
     <el-pagination
       background
-      :current-page="queryForm.pageNo"
-      :page-size="queryForm.pageSize"
+      :current-page="queryForm.current"
+      :page-size="queryForm.size"
       :layout="layout"
       :total="total"
       @size-change="handleSizeChange"
@@ -145,8 +145,8 @@
       setSelectRows(val) {
         this.selectRows = val
       },
-      handleEdit() {
-          this.$refs['Detail'].showDetail()
+      handleQuery(row) {
+          this.$refs['Detail'].showDetail(row)
       },
       handleblocking(row) {
         if(row.id && row.enable === false){
@@ -178,7 +178,6 @@
         }
       },
       handleSizeChange(val) {
-        console.log(val)
         this.queryForm.size = val
         this.fetchData()
       },
